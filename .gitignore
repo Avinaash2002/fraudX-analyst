@@ -205,3 +205,32 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Environment variables - NEVER commit this
+.env
+
+# Large files
+*.csv
+ml/data/
+
+# ML model files (too large for GitHub)
+*.pkl
+*.keras
+ml/models_saved/
+ml/plots/
+
+# MLflow
+mlruns/
+
+# Flutter
+flutter_app/.dart_tool/
+flutter_app/build/
+flutter_app/.flutter-plugins
+
+# VS Code
+.vscode/
