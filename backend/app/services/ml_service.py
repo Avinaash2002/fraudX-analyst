@@ -12,7 +12,7 @@ import tensorflow as tf
 from typing import Tuple
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-MODELS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'models_saved')
+MODELS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'ml','training','models_saved')
 
 # ── Global model cache (loaded once at startup) ────────────────────────────────
 _models     = {}
