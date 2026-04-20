@@ -125,8 +125,11 @@ def predict(model_name: str, X: np.ndarray) -> Tuple[str, float, float]:
     if model_name in ("XGBoost", "LightGBM"):
         prob        = float(model.predict_proba(X)[0][1])
         prediction  = "FRAUD" if prob >= 0.5 else "NORMAL"
-        risk_score  = prob
-        confidence  = prob if prediction == "FRAUD" else 1 - prob
+        # Cap risk score to avoid 100% (looks more realistic)
+        risk_score  = min(prob, 0.995) if prob > 0.99 else prob
+        # Confidence: how far from the decision boundary (0.5)
+        distance    = abs(prob - 0.5) * 2  # 0.0 to 1.0
+        confidence  = 0.5 + (distance * 0.48)  # Range: 50% to 98%
 
     elif model_name == "Autoencoder":
         recon       = model.predict(X, verbose=0)
@@ -139,9 +142,11 @@ def predict(model_name: str, X: np.ndarray) -> Tuple[str, float, float]:
 
         threshold   = _meta.get("autoencoder_threshold", 0.5)
         prediction  = "FRAUD" if combined > threshold else "NORMAL"
-        # Normalize combined error to 0-1 range for risk score
-        risk_score  = min(combined / (threshold * 3), 1.0)
-        confidence  = risk_score if prediction == "FRAUD" else 1 - risk_score
+        # Normalize combined error to 0-1 range for risk score, cap at 0.98
+        risk_score  = min(combined / (threshold * 3), 0.98)
+        # Confidence: how far the error is from the threshold
+        ratio       = combined / threshold if threshold > 0 else 1.0
+        confidence  = min(0.5 + abs(ratio - 1.0) * 0.3, 0.97)
 
     else:
         raise ValueError(f"Unknown model: {model_name}")

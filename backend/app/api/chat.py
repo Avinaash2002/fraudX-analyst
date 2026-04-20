@@ -127,7 +127,30 @@ async def chat(request: ChatRequest, db: AsyncSession = Depends(get_db)):
             print(f"  ⚠️ Could not load simulation context: {e}")
 
     # ── Agent 2: Retrieve context from Pinecone ───────────────────────────────
-    context_docs = await retrieve_context(request.message)
+    # Strategy: Do TWO searches and combine results for better coverage
+    # Search 1: The user's actual message
+    # Search 2: Enriched query with conversation context (catches follow-ups)
+    context_docs = await retrieve_context(request.message, top_k=5)
+    print(f"  🔍 Search 1: '{request.message[:60]}' → {len(context_docs)} docs")
+
+    if request.chat_history:
+        # Build a focused enriched query from recent topics + current question
+        recent_topics = " ".join([
+            msg.get("content", "")[:80]
+            for msg in request.chat_history[-2:]
+            if msg.get("role") == "user"  # only use user messages for search topics
+        ])
+        if recent_topics:
+            enriched_query = f"{recent_topics} {request.message}"
+            extra_docs = await retrieve_context(enriched_query, top_k=3)
+            print(f"  🔍 Search 2: '{enriched_query[:80]}' → {len(extra_docs)} docs")
+            # Merge and deduplicate
+            seen = set(context_docs)
+            for doc in extra_docs:
+                if doc not in seen:
+                    context_docs.append(doc)
+                    seen.add(doc)
+            print(f"  📚 Total unique docs: {len(context_docs)}")
 
     # Fall back to hardcoded context if Pinecone returns nothing
     if not context_docs:

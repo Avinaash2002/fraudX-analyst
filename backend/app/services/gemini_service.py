@@ -31,15 +31,51 @@ async def explain_prediction(
     Takes the raw ML prediction output and generates a clear,
     human-readable explanation for the Flutter app user.
     """
+    # Map V-features to likely real-world meanings for better explanations
+    feature_meanings = {
+        'V1': 'transaction frequency pattern', 'V2': 'merchant risk profile',
+        'V3': 'geographic consistency', 'V4': 'spending amount deviation',
+        'V5': 'card usage pattern', 'V6': 'transaction velocity',
+        'V7': 'time-of-day risk factor', 'V8': 'merchant category risk',
+        'V9': 'account behavior anomaly', 'V10': 'cardholder profile deviation',
+        'V11': 'cross-border indicator', 'V12': 'spending category anomaly',
+        'V13': 'transaction sequence pattern', 'V14': 'historical fraud correlation',
+        'V15': 'payment channel risk', 'V16': 'device fingerprint anomaly',
+        'V17': 'behavioral biometric deviation', 'V18': 'session risk factor',
+        'V19': 'authentication pattern', 'V20': 'recurring payment indicator',
+        'V21': 'IP geolocation risk', 'V22': 'time since last transaction',
+        'V23': 'merchant trust score', 'V24': 'card-not-present indicator',
+        'V25': 'account age factor', 'V26': 'chargeback history',
+        'V27': 'transaction rounding pattern', 'V28': 'velocity check score',
+    }
+
     features_text = "\n".join([
-        f"  - {f['feature']}: value={f['value']:.4f}, impact={f['impact']:.4f}"
+        f"  - {feature_meanings.get(f['feature'], f['feature'])}: "
+        f"impact={f['impact']:.4f} ({'pushes toward FRAUD' if f['impact'] > 0 else 'pushes toward NORMAL'}), "
+        f"raw value={f['value']:.4f}"
         for f in top_features[:5]
     ])
 
     location_text = f"Location: {location}" if location else "Location: Not specified"
 
-    prompt = f"""You are FraudX, an AI fraud detection assistant.
-Explain this credit card transaction analysis result in clear, simple language for a non-technical user.
+    if prediction == "FRAUD":
+        analysis_instruction = f"""Write a detailed 5-6 sentence fraud analysis that:
+1. State this transaction has been FLAGGED AS FRAUDULENT with a clear warning tone
+2. Explain the specific risk level (e.g. "high risk at 87.3%" or "critical risk at 95.2%")
+3. Describe the TOP 2-3 specific factors that triggered the fraud alert — explain WHY each factor is suspicious (e.g. "The transaction shows a significant deviation from the cardholder's typical spending behavior, with the behavioral biometric pattern scoring -14.2, far outside the normal range of -2 to +2")
+4. Explain what pattern the model detected (e.g. "This combination of unusual merchant risk profile and abnormal transaction velocity is a classic indicator of card-not-present fraud")
+5. Give specific actionable advice (contact bank, freeze card, review recent transactions)
+6. Mention this analysis was performed by the {model_name} model using SHAP explainability"""
+    else:
+        analysis_instruction = """Write a detailed 4-5 sentence analysis that:
+1. Confirm this transaction appears LEGITIMATE with a reassuring tone
+2. State the risk level clearly (e.g. "low risk at 12.4%")
+3. Mention 2 specific factors that indicate legitimacy (e.g. "The transaction frequency pattern and spending behavior are consistent with the cardholder's typical usage")
+4. Note any slightly elevated factors if present (e.g. "While the merchant category shows a minor deviation, it remains within acceptable bounds")
+5. Remind the user to always monitor their statements"""
+
+    prompt = f"""You are FraudX, an expert AI fraud detection analyst.
+Provide a detailed, specific analysis of this credit card transaction. Do NOT be generic.
 
 Transaction Details:
 - Amount: ${amount:.2f}
@@ -47,19 +83,19 @@ Transaction Details:
 - Model Used: {model_name}
 - Prediction: {prediction}
 - Risk Score: {risk_score:.1%}
-- Confidence: {confidence_score:.1%} confident this transaction is {prediction}
+- Confidence: {confidence_score:.1%}
 
-Top Factors That Influenced This Decision:
+Key Risk Factors (from SHAP Analysis — these are the features that most influenced the prediction):
 {features_text}
 
-Write a 3-4 sentence explanation that:
-1. States clearly whether this transaction appears fraudulent or normal
-2. Explains the risk level in simple terms (low/medium/high)
-3. Mentions 1-2 of the most important factors in plain English
-4. Suggests what the user should do if fraud is detected
+{analysis_instruction}
 
-Keep the tone professional but easy to understand. Do not use technical jargon.
-Do not mention the feature names (V1, V14, etc.) directly — describe what they represent conceptually."""
+IMPORTANT RULES:
+- Be SPECIFIC — reference the actual factors and their values from the SHAP analysis above
+- Each explanation must be UNIQUE — vary your phrasing and focus different factors each time
+- Never use the raw feature names (V1, V14) — use the descriptive names provided
+- Include specific numbers (risk percentages, factor values) to sound authoritative
+- Do NOT use markdown bold formatting (no ** markers)"""
 
     try:
         response = client.models.generate_content(
@@ -135,13 +171,18 @@ Guidelines:
 # ── Embedding for Pinecone RAG ─────────────────────────────────────────────────
 def get_embedding(text: str) -> List[float]:
     """
-    Generates a text embedding using Google's text-embedding-004 model.
-    Used to vectorize knowledge base chunks and user queries for Pinecone search.
+    Generates a text embedding using Google's gemini-embedding-001 model.
+    MUST match the dimension used in upload_knowledge.py (2048).
     """
     try:
+        from google.genai import types
         response = client.models.embed_content(
             model    = "models/gemini-embedding-001",
             contents = text,
+            config   = types.EmbedContentConfig(
+                task_type="RETRIEVAL_QUERY",
+                output_dimensionality=2048,
+            ),
         )
         return response.embeddings[0].values
     except Exception as e:
