@@ -1,0 +1,32 @@
+# ── Python ──────────────────────
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# ── Git ─────────────────────────
+.git/
+.gitignore
+
+# ── ML training artifacts ──────
+ml/training/mlruns/
+ml/training/mlflow.db
+ml/training/plots/
+ml/training/preprocess.py
+ml/training/train_all.py
+ml/training/train_xgboost.py
+ml/training/train_lightgbm.py
+ml/training/train_autoencoder.py
+
+# ── Knowledge base docs ────────
+knowledge_base/documents/
+knowledge_base/upload_knowledge.py
+
+# ── Flutter app ─────────────────
+fraudx_analyst_app/
+
+# ── IDE ─────────────────────────
+.idea/
+.vscode/
+*.iml

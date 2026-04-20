@@ -1,0 +1,20 @@
+# ══════════════════════════════════════════════════════════════
+#  FraudX Analyst - Render Deployment Config
+# ══════════════════════════════════════════════════════════════
+
+services:
+  - type: web
+    name: fraudx-analyst-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    envVars:
+      - key: SUPABASE_DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: fraudx-knowledge
