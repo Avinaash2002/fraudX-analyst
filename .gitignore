@@ -221,10 +221,8 @@ backend/ml/data/creditcard.csv
 !backend/ml/data/test_sample.csv
 
 # ML model files (too large for GitHub)
-*.pkl
-*.keras
-ml/models_saved/
-ml/plots/
+ml/training/mlruns/
+ml/training/plots/
 
 # MLflow
 mlruns/
