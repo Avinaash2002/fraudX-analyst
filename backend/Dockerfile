@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ app/
 COPY ml/ ml/
 COPY knowledge_base/ knowledge_base/
-COPY data/ data/
+COPY data/test_sample.csv data/test_sample.csv
 
 # Create __init__.py files if missing
 RUN touch app/__init__.py app/api/__init__.py app/services/__init__.py

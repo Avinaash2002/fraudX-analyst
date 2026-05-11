@@ -200,35 +200,26 @@ from sklearn.model_selection import train_test_split
 _test_set_cache = None
 
 def _load_test_set():
-    """
-    Loads the dataset and extracts ONLY the test set (15%).
-    Uses the same split logic as preprocess.py (random_state=42, stratify)
-    so these are transactions the model has NEVER seen during training.
-    """
     global _test_set_cache
     if _test_set_cache is not None:
         return _test_set_cache
 
+    # Try full dataset first (local dev), then sample (production)
     csv_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'creditcard.csv')
-    if not os.path.exists(csv_path):
-        csv_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'data', 'creditcard.csv')
-    if not os.path.exists(csv_path):
-        csv_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'training', '..', 'data', 'creditcard.csv')
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+        y = df['Class'].values
+        _, X_temp, _, y_temp = train_test_split(df, y, test_size=0.30, random_state=42, stratify=y)
+        _, X_test, _, _ = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp)
+        _test_set_cache = X_test
+    else:
+        sample_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'test_sample.csv')
+        if not os.path.exists(sample_path):
+            raise Exception("No dataset found")
+        _test_set_cache = pd.read_csv(sample_path)
 
-    df = pd.read_csv(csv_path)
-    y = df['Class'].values
-
-    # Replicate EXACT same split as preprocess.py
-    _, X_temp, _, y_temp = train_test_split(
-        df, y, test_size=0.30, random_state=42, stratify=y
-    )
-    _, X_test, _, _ = train_test_split(
-        X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp
-    )
-
-    _test_set_cache = X_test
-    print(f"  📊 Test set loaded: {len(X_test):,} transactions "
-          f"(fraud: {(X_test['Class']==1).sum()}, normal: {(X_test['Class']==0).sum()})")
+    print(f"  📊 Test set loaded: {len(_test_set_cache):,} rows "
+          f"(fraud: {(_test_set_cache['Class']==1).sum()}, normal: {(_test_set_cache['Class']==0).sum()})")
     return _test_set_cache
 
 
