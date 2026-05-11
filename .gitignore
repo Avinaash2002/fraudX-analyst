@@ -217,6 +217,7 @@ venv/
 # Large files
 *.csv
 ml/data/
+backend/data/creditcard.csv
 
 # ML model files (too large for GitHub)
 *.pkl
