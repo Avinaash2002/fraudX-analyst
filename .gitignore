@@ -215,9 +215,10 @@ venv/
 .env
 
 # Large files
-*.csv
-ml/data/
-backend/data/creditcard.csv
+backend/ml/data/creditcard.csv
+
+# Allow test sample
+!backend/ml/data/test_sample.csv
 
 # ML model files (too large for GitHub)
 *.pkl
