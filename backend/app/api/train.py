@@ -205,7 +205,7 @@ def _load_test_set():
         return _test_set_cache
 
     # Try full dataset first (local dev), then sample (production)
-    csv_path = os.path.join(os.path.dirname(__file__), '..', '..','ml','data', 'test_sample.csv')
+    csv_path = os.path.join(os.path.dirname(__file__), '..', '..','ml','data', 'creditcard.csv')
     if os.path.exists(csv_path):
         df = pd.read_csv(csv_path)
         y = df['Class'].values
@@ -213,7 +213,7 @@ def _load_test_set():
         _, X_test, _, _ = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp)
         _test_set_cache = X_test
     else:
-        sample_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'test_sample.csv')
+        sample_path = os.path.join(os.path.dirname(__file__), '..', '..','ml','data', 'test_sample.csv')
         if not os.path.exists(sample_path):
             raise Exception("No dataset found")
         _test_set_cache = pd.read_csv(sample_path)
