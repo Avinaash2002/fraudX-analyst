@@ -205,7 +205,7 @@ def _load_test_set():
         return _test_set_cache
 
     # Try full dataset first (local dev), then sample (production)
-    csv_path = os.path.join(os.path.dirname(__file__), '..', '..','ml','data', 'creditcard.csv')
+    csv_path = os.path.join(os.path.dirname(__file__), '..', '..','ml','data', 'test_sample.csv')
     if os.path.exists(csv_path):
         df = pd.read_csv(csv_path)
         y = df['Class'].values
