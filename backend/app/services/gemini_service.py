@@ -56,7 +56,6 @@ async def explain_prediction(
         for f in top_features[:5]
     ])
 
-    location_text = f"Location: {location}" if location else "Location: Not specified"
 
     if prediction == "FRAUD":
         analysis_instruction = f"""Write a detailed 5-6 sentence fraud analysis that:
@@ -79,7 +78,6 @@ Provide a detailed, specific analysis of this credit card transaction. Do NOT be
 
 Transaction Details:
 - Amount: ${amount:.2f}
-- {location_text}
 - Model Used: {model_name}
 - Prediction: {prediction}
 - Risk Score: {risk_score:.1%}
