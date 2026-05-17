@@ -33,67 +33,66 @@ async def explain_prediction(
     """
     # Map V-features to likely real-world meanings for better explanations
     feature_meanings = {
-        'V1': 'transaction frequency pattern', 'V2': 'merchant risk profile',
-        'V3': 'geographic consistency', 'V4': 'spending amount deviation',
-        'V5': 'card usage pattern', 'V6': 'transaction velocity',
-        'V7': 'time-of-day risk factor', 'V8': 'merchant category risk',
-        'V9': 'account behavior anomaly', 'V10': 'cardholder profile deviation',
-        'V11': 'cross-border indicator', 'V12': 'spending category anomaly',
-        'V13': 'transaction sequence pattern', 'V14': 'historical fraud correlation',
-        'V15': 'payment channel risk', 'V16': 'device fingerprint anomaly',
-        'V17': 'behavioral biometric deviation', 'V18': 'session risk factor',
-        'V19': 'authentication pattern', 'V20': 'recurring payment indicator',
-        'V21': 'IP geolocation risk', 'V22': 'time since last transaction',
-        'V23': 'merchant trust score', 'V24': 'card-not-present indicator',
-        'V25': 'account age factor', 'V26': 'chargeback history',
-        'V27': 'transaction rounding pattern', 'V28': 'velocity check score',
+        'V1': 'Transaction frequency pattern', 'V2': 'Merchant risk profile',
+        'V3': 'Geographic consistency', 'V4': 'Spending amount deviation',
+        'V5': 'Card usage pattern', 'V6': 'Transaction velocity',
+        'V7': 'Time-of-day risk factor', 'V8': 'Merchant category risk',
+        'V9': 'Account behaviour anomaly', 'V10': 'Cardholder profile deviation',
+        'V11': 'Cross-border indicator', 'V12': 'Spending category anomaly',
+        'V13': 'Transaction sequence pattern', 'V14': 'Historical fraud correlation',
+        'V15': 'Payment channel risk', 'V16': 'Device fingerprint anomaly',
+        'V17': 'Behavioural biometric deviation', 'V18': 'Session risk factor',
+        'V19': 'Authentication pattern', 'V20': 'Recurring payment indicator',
+        'V21': 'IP geolocation risk', 'V22': 'Time since last transaction',
+        'V23': 'Merchant trust score', 'V24': 'Card-not-present indicator',
+        'V25': 'Account age factor', 'V26': 'Chargeback history',
+        'V27': 'Transaction rounding pattern', 'V28': 'Velocity check score',
     }
 
     features_text = "\n".join([
-        f"  - {feature_meanings.get(f['feature'], f['feature'])}: "
-        f"impact={f['impact']:.4f} ({'pushes toward FRAUD' if f['impact'] > 0 else 'pushes toward NORMAL'}), "
+        f"  - {f['feature']} ({feature_meanings.get(f['feature'], 'Unknown factor')}): "
+        f"impact={f['impact']:.4f} ({'pushes toward FRAUD (red/positive)' if f['impact'] > 0 else 'pushes toward NORMAL (green/negative)'}), "
         f"raw value={f['value']:.4f}"
         for f in top_features[:5]
     ])
 
-
-    if prediction == "FRAUD":
-        analysis_instruction = f"""Write a detailed 5-6 sentence fraud analysis that:
-1. State this transaction has been FLAGGED AS FRAUDULENT with a clear warning tone
-2. Explain the specific risk level (e.g. "high risk at 87.3%" or "critical risk at 95.2%")
-3. Describe the TOP 2-3 specific factors that triggered the fraud alert — explain WHY each factor is suspicious (e.g. "The transaction shows a significant deviation from the cardholder's typical spending behavior, with the behavioral biometric pattern scoring -14.2, far outside the normal range of -2 to +2")
-4. Explain what pattern the model detected (e.g. "This combination of unusual merchant risk profile and abnormal transaction velocity is a classic indicator of card-not-present fraud")
-5. Give specific actionable advice (contact bank, freeze card, review recent transactions)
-6. Mention this analysis was performed by the {model_name} model using SHAP explainability"""
-    else:
-        analysis_instruction = """Write a detailed 4-5 sentence analysis that:
-1. Confirm this transaction appears LEGITIMATE with a reassuring tone
-2. State the risk level clearly (e.g. "low risk at 12.4%")
-3. Mention 2 specific factors that indicate legitimacy (e.g. "The transaction frequency pattern and spending behavior are consistent with the cardholder's typical usage")
-4. Note any slightly elevated factors if present (e.g. "While the merchant category shows a minor deviation, it remains within acceptable bounds")
-5. Remind the user to always monitor their statements"""
-
     prompt = f"""You are FraudX, an expert AI fraud detection analyst.
-Provide a detailed, specific analysis of this credit card transaction. Do NOT be generic.
+    Provide a detailed, specific analysis of this credit card transaction. Do NOT be generic.
 
-Transaction Details:
-- Amount: ${amount:.2f}
-- Model Used: {model_name}
-- Prediction: {prediction}
-- Risk Score: {risk_score:.1%}
-- Confidence: {confidence_score:.1%}
+    Transaction Details:
+    - Amount: ${amount:.2f}
+    - Model Used: {model_name}
+    - Prediction: {prediction}
+    - Risk Score: {risk_score:.1%}
+    - Confidence: {confidence_score:.1%}
 
-Key Risk Factors (from SHAP Analysis — these are the features that most influenced the prediction):
-{features_text}
+    Key Risk Factors from SHAP Analysis (these are the features that most influenced the prediction):
+    {features_text}
 
-{analysis_instruction}
+    IMPORTANT — Your explanation MUST include ALL of the following:
 
-IMPORTANT RULES:
-- Be SPECIFIC — reference the actual factors and their values from the SHAP analysis above
-- Each explanation must be UNIQUE — vary your phrasing and focus different factors each time
-- Never use the raw feature names (V1, V14) — use the descriptive names provided
-- Include specific numbers (risk percentages, factor values) to sound authoritative
-- Do NOT use markdown bold formatting (no ** markers)"""
+    1. State clearly whether this transaction is FRAUD or NORMAL with the risk percentage
+
+    2. Explain what SHAP Feature Importance means in simple terms:
+    - "The chart above shows which transaction characteristics most influenced the prediction"
+    - Red bars (positive values) = factors pushing toward FRAUD
+    - Green bars (negative values) = factors pushing toward NORMAL
+    - Longer bars = stronger influence on the prediction
+
+    3. For EACH of the top 3 features shown, explain:
+    - What the feature name means (use the descriptive name, e.g. V14 means "Historical fraud correlation")
+    - What its value indicates about this specific transaction
+    - Whether it pushed toward fraud or normal and why that matters
+
+    4. Summarise the overall pattern: why the combination of these factors led to the final prediction
+
+    5. If FRAUD: advise the user to contact their bank and freeze the card
+    If NORMAL: reassure the user but remind them to monitor statements
+
+    Do NOT use markdown bold (no ** markers). Write in plain text paragraphs.
+    Vary your phrasing each time — do not use the same template.
+    Reference the actual SHAP values and feature names from the data above.
+    Keep the tone professional but accessible to non-technical users."""
 
     try:
         response = client.models.generate_content(
