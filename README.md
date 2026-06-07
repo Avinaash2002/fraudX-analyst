@@ -27,16 +27,16 @@ Flutter App (Android)
        │
        ▼ HTTPS
 ┌──────────────────────────────────────┐
-│  FastAPI Backend (Docker on Render)   │
+│  FastAPI Backend (Docker on Render)  |
 │                                      │
-│  ┌──────────┐  ┌──────────────────┐  │
-│  │ ML Models │  │ SHAP Explainer   │  │
-│  │ XGBoost   │  │ TreeExplainer    │  │
-│  │ LightGBM  │  │ KernelExplainer  │  │
-│  │Autoencoder│  │                  │  │
-│  └─────┬────┘  └────────┬─────────┘  │
-│        │                │            │
-│        ▼                ▼            │
+│  ┌───────────┐  ┌──────────────────┐ │
+│  │ ML Models │  │ SHAP Explainer   │ │
+│  │ XGBoost   │  │ TreeExplainer    │ │
+│  │ LightGBM  │  │ KernelExplainer  │ │
+│  │Autoencoder│  │                  │ │
+│  └─────┬─────┘  └────────┬─────────┘ │
+│        │                 │           │
+│        ▼                 ▼           │
 │  ┌──────────────────────────────┐    │
 │  │ Google Gemini API            │    │
 │  │ • AI Explanations            │    │
