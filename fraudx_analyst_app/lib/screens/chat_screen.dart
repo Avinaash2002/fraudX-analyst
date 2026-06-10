@@ -1,4 +1,4 @@
-/// FraudX Analyst - Chat Screen (Gemini-style)
+/// FraudX Analyst - Chat Screen
 /// ================================================
 
 import 'package:flutter/material.dart';

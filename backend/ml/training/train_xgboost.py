@@ -1,5 +1,5 @@
 """
-FraudX Analyst - XGBoost Training (FIXED - No Leakage)
+FraudX Analyst - XGBoost Training
 ========================================================
 Proper workflow:
 1. Train on TRAIN set

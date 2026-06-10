@@ -1,5 +1,5 @@
 """
-FraudX Analyst - LightGBM Training (FIXED - No Leakage)
+FraudX Analyst - LightGBM Training
 ========================================================
 Proper workflow:
 1. Train on TRAIN set

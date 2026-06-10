@@ -27,7 +27,7 @@ class _ModelsScreenState extends State<ModelsScreen> {
     'Accuracy': 'The percentage of all predictions (fraud and normal) that the model got correct. High accuracy can be misleading with imbalanced datasets.',
     'Precision': 'Of all transactions flagged as fraud, how many were actually fraud? Higher precision = fewer false alarms.',
     'Recall': 'Of all actual fraud cases, how many did the model catch? Higher recall = fewer missed frauds.',
-    'F1 Score': 'The harmonic mean of precision and recall. Balances both metrics — the best single measure for imbalanced fraud detection.',
+    'F1 Score': 'The harmonic mean of precision and recall. Balances both metrics, the best single measure for imbalanced fraud detection.',
     'AUC-ROC': 'Area Under the ROC Curve. Measures how well the model distinguishes between fraud and normal across all thresholds. 1.0 = perfect, 0.5 = random.',
   };
 

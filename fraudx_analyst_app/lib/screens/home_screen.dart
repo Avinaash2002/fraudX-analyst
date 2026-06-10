@@ -1,7 +1,6 @@
 /// FraudX Analyst - Home Screen
 /// ===============================
-/// Matches Lovable: gradient hero with decorative circles, stat cards
-/// with correct colors (white/red/green/blue), staggered animations
+/// Main dashboard with hero card, stats, and recent transactions.
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +12,7 @@ import 'user_guide_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/tutorial_service.dart';
 
-// ── Lovable palette ─────────────────────────────────────────────────────────
+// ── Figma Design palette ─────────────────────────────────────────────────────────
 const _kGreenTeal = Color(0xFF2A9D8F);
 const _kSkyBlue = Color(0xFF38BDF8);
 const _kLightGreen = Color(0xFF6BCB77);
@@ -348,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: Stack(children: [
-          // Decorative circles (matching Lovable)
+          // Decorative circles (matching Figma design style and colour)
           Positioned(right: -24, bottom: -24,
             child: Container(width: 120, height: 120, decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1), shape: BoxShape.circle))),
@@ -399,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  //  STAT CARDS — matching Lovable exactly
+  //  STAT CARDS 
   // ════════════════════════════════════════════════════════════════════════════
 
   String _formatTimeAgo(DateTime dt) {

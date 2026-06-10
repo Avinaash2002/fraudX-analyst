@@ -1,5 +1,5 @@
 """
-FraudX Analyst - Autoencoder Training (FIXED - No Leakage)
+FraudX Analyst - Autoencoder Training 
 ============================================================
 Proper workflow:
 1. Train ONLY on normal transactions from TRAIN set

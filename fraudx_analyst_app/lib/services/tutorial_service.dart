@@ -1,7 +1,5 @@
 /// FraudX Analyst - Interactive Tutorial Service (v2)
 /// ===================================================
-/// Fixed step flow: Continue button for action steps,
-/// proper waiting for user interaction.
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

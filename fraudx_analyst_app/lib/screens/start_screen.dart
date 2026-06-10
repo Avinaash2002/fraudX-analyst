@@ -1,13 +1,13 @@
 /// FraudX Analyst - Start Screen
 /// ================================
-/// Colors: teal-green (#2A9D8F → #4ECDC4) matching Lovable design
+/// Colors: teal-green according to my figma design
 /// 3 controllers: entrance, loop (scan+particles+dot), button (breathe+glow)
 
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-// ── Lovable gradient: green-teal + sky-blue + light-green ────────────────────
+// ── Figma Design palette ──────────────────────────────────────────────────────
 const _kGreenTeal = Color(0xFF2A9D8F);  // green-teal
 const _kSkyBlue = Color(0xFF38BDF8);    // sky-blue accent
 const _kLightGreen = Color(0xFF6BCB77); // light green
@@ -199,7 +199,7 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(children: [
-                // Green-teal → sky-blue → light-green gradient (Lovable mix)
+                // Green-teal → sky-blue → light-green gradient
                 Container(decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft, end: Alignment.bottomRight,
