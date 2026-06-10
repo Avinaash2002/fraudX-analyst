@@ -1,11 +1,11 @@
 """
 FraudX Analyst - Train / Models API
 =====================================
-GET  /api/v1/models            → list all models with metrics
-GET  /api/v1/models/compare    → side-by-side comparison data
-GET  /api/v1/models/{name}     → single model details
-POST /api/v1/train/custom      → upload CSV and train all 3 models
-POST /api/v1/train/validate    → validate CSV format before training
+GET  /api/v1/models            --> list all models with metrics
+GET  /api/v1/models/compare    --> side-by-side comparison data
+GET  /api/v1/models/{name}     --> single model details
+POST /api/v1/train/custom      --> upload CSV and train all 3 models
+POST /api/v1/train/validate    --> validate CSV format before training
 """
 
 import io

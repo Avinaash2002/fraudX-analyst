@@ -1,7 +1,7 @@
 """
-FraudX Analyst - Gemini Service (Updated)
-==========================================
-Uses Google Gemini 1.5 Flash (new google-genai SDK) to generate:
+FraudX Analyst - Gemini Service
+================================
+Uses Google Gemini 1.5 Flash to generate:
   1. Natural language explanations of fraud prediction results
   2. Answers to fraud-related questions in the RAG chatbot
 """

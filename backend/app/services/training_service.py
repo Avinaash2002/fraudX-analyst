@@ -2,7 +2,7 @@
 FraudX Analyst - Training Service
 ====================================
 Handles full training pipeline for custom CSV uploads.
-Uses reduced Optuna trials (10) for faster execution (~3-5 min).
+Uses reduced Optuna trials (10) for faster execution (about 3-5 min).
 """
 
 import os, json, time, warnings

@@ -1,10 +1,10 @@
 """
 FraudX Analyst - History API
 ==============================
-GET    /api/v1/history              → list simulation history for a device
-GET    /api/v1/history/{id}         → single simulation detail
-DELETE /api/v1/history/{id}         → delete a simulation record
-DELETE /api/v1/history              → clear all history for a device
+GET    /api/v1/history              --> list simulation history for a device
+GET    /api/v1/history/{id}         --> single simulation detail
+DELETE /api/v1/history/{id}         --> delete a simulation record
+DELETE /api/v1/history              --> clear all history for a device
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query
